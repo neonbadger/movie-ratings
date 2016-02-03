@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <h2>Sign Up to Rate some Movies!</h2>
+
+    <br>
+
+    <form action="/process_sign_up" method="POST">
+      Email address: <input type="text" name="email">
+      <br>
+      Password: <input type="password" name="password">
+      <br>
+      <input type="submit" value="Sign up!">
+
+    </form>
+  
+
+{% endblock %}
