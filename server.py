@@ -33,6 +33,17 @@ def user_list():
     return render_template("user_list.html", users=users)
 
 
+@app.route("/user/<int:user_id>")
+def show_user(user_id):
+    """Show a single user with the given user_id"""
+
+    user = User.query.filter(User.user_id == user_id).first()
+    user_ratings = user.ratings
+
+    return render_template("user.html", user=user,
+                                 user_ratings = user_ratings)
+
+
 @app.route("/sign_up")
 def sign_up():
     """Show form that asks for username and password."""
@@ -78,10 +89,12 @@ def process_login():
         if existing_user.password == user_password:
             flash("Successfully logged in!!!!")
             session["user_id"] = existing_user.user_id
-            return redirect("/")
+            user_id = str(existing_user.user_id)
+            return redirect("/user/"+ user_id)
         else:
             flash("Incorrect email/password. Please try again")
             return redirect("/login")
+
 
 @app.route("/logout")
 def logout():
