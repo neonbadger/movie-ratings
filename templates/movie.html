@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <h2>{{ movie.title }}</h2>
+    <ul>
+      <li>
+          Released: {{ movie.released_at }}
+      </li>
+      <li>
+          <a href="{{ movie.imdb_url }}">IMDB</a>
+      </li>
+      <li>
+          Average rating: {{ avg_rating }}
+      </li>
+    </ul>
+
+    {% if session.get("user_id") %}
+      <form action="/process_rating" method="POST">
+        <input type="number" min="1" max="5" name="new_rating" placeholder="1-5"> 
+        <input type="hidden" name="movie_id" value="{{ movie.movie_id }}">
+        <input type="submit" value="Submit Rating!">
+      </form>
+    {% endif %}
+
+   <table>
+    <tr>
+      <th>Ratings</th>
+    </tr>
+    {% for movie_rating in movie_ratings %}
+        <tr>
+          <td>
+            {{movie_rating.score}}  
+          </td>
+        </tr>
+    {% endfor %}  
+  </table>  
+
+    
+
+{% endblock %}

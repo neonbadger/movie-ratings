@@ -41,7 +41,63 @@ def show_user(user_id):
     user_ratings = user.ratings
 
     return render_template("user.html", user=user,
-                                 user_ratings = user_ratings)
+                            user_ratings = user_ratings)
+
+
+@app.route("/movies")
+def show_movie_list():
+    """Display list of all movies, with links to movie detail pages"""
+
+    movies = Movie.query.order_by(Movie.title).all()
+
+    return render_template("movie_list.html", movies=movies)
+
+
+@app.route("/movie/<int:movie_id>")
+def show_movie(movie_id):
+    """Show info about a movie and allow user to rate the movie."""
+
+    movie = Movie.query.filter(Movie.movie_id == movie_id).first()
+    movie_ratings = movie.ratings
+    count = len(movie_ratings)
+    if count > 0:
+        total = 0
+        for rating in movie_ratings:
+            total += rating.score
+        avg_rating = total/count
+    else:
+        avg_rating = "This movie has not yet been rated."
+
+
+    return render_template("movie.html", movie=movie,
+                            movie_ratings=movie_ratings,
+                            avg_rating=avg_rating)
+
+@app.route("/process_rating", methods = ['POST'])
+def process_rating():
+    """Add or update user rating to database."""
+
+    rating = request.form.get("new_rating")
+    user_id = session["user_id"]
+    movie_id = request.form.get("movie_id")
+
+    existing_rating = Rating.query.filter(Rating.user_id == user_id, 
+                                          Rating.movie_id == movie_id).all()
+
+    if len(existing_rating) == 0:
+        new_rating = Rating(score = rating,
+                            user_id = user_id,
+                            movie_id = movie_id)
+        db.session.add(new_rating)
+    
+    else:
+        existing_rating[0].score = rating
+
+    db.session.commit()
+
+    return "Your rating was submitted."
+
+
 
 
 @app.route("/sign_up")
