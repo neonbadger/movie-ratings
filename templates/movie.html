@@ -10,8 +10,22 @@
           <a href="{{ movie.imdb_url }}">IMDB</a>
       </li>
       <li>
-          Average rating: {{ avg_rating }}
+          Average rating: {{ '{:.2f}'.format(avg_rating) }}
       </li>
+      <li>
+        {% if user_rating %}
+          You rated this movie {{ user_rating.score }}.
+        {% endif %}
+
+        {% if prediction %}
+          We predict you'll rate this movie {{ '{:.2f}'.format(prediction) }}.
+        {% endif %}
+      </li>
+        {% if beratement %}
+          <li>
+            The Evil Eye says: {{beratement}}
+          </li>
+        {% endif %}
     </ul>
 
     {% if session.get("user_id") %}
@@ -38,3 +52,10 @@
     
 
 {% endblock %}
+
+
+                            movie=movie,
+                                    movie_ratings=movie_ratings,
+                            avg_rating=avg_rating,
+                            user_rating=user_rating,
+                            prediction=prediction)
